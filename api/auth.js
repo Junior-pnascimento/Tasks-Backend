@@ -9,11 +9,11 @@ module.exports = app => {
         }
 
         const user = await app.db('users')
-            .where({ email: req.body.email })
+            .where("LOWER(email) = LOWER(?)", req.body.email)
             .first()
 
         if (user) {
-            bcryopt.compare(req.body.password, user.password, (err, isMatch) => {
+            bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
                 if (err || !isMatch) {
                     return res.status(401).send()
                 }
